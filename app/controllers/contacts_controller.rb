@@ -1,14 +1,14 @@
 class ContactsController < ApplicationController
-  before_action :authenticate, except: [:index, :show]
+  # before_action :authenticate, except: [:index, :show]
   before_action :set_contact, only: [:show, :edit, :update, :destroy]
 
   # GET /contacts
   # GET /contacts.json
   def index
     if params[:letter]
-      @contacts = Contact.by_letter(params[:letter])
+      @contacts = Contact.by_letter(params[:letter]).select{|c| !c.hidden?}
     else
-      @contacts = Contact.order('lastname, firstname')
+      @contacts = Contact.order('lastname, firstname').select{|c| !c.hidden?}
     end
   end
 
@@ -66,6 +66,16 @@ class ContactsController < ApplicationController
     respond_to do |format|
       format.html { redirect_to contacts_url, notice: 'Contact was successfully destroyed.' }
       format.json { head :no_content }
+    end
+  end
+
+  def hide_contact
+    set_contact
+
+    @contact.update(hidden: true)
+
+    respond_to do |format|
+      format.html { redirect_to contacts_url }
     end
   end
 
