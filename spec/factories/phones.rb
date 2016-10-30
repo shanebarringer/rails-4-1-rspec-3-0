@@ -1,7 +1,7 @@
 FactoryGirl.define do
   factory :phone do
     association :contact
-    phone { Faker::PhoneNumber.phone_number }
+    phone { FFaker::PhoneNumber.phone_number }
 
     factory :home_phone do
       phone_type 'home'
